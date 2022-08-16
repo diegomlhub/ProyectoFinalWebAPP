@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "WebApplication1": {
+    "ProyectoFinalWebAPP": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

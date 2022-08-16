@@ -1,4 +1,4 @@
-﻿namespace WebApplication1.Controllers.DTO
+﻿namespace ProyectoFinalWebAPP.Controllers.DTOS
 {
     public class PutUsuario
     {

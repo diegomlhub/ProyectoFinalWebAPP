@@ -1,0 +1,7 @@
+C:\Local\ProyectoFinalWebAPP\WebApplication1\obj\Debug\net6.0\ProyectoFinalWebAPP.csproj.AssemblyReference.cache
+C:\Local\ProyectoFinalWebAPP\WebApplication1\obj\Debug\net6.0\ProyectoFinalWebAPP.GeneratedMSBuildEditorConfig.editorconfig
+C:\Local\ProyectoFinalWebAPP\WebApplication1\obj\Debug\net6.0\ProyectoFinalWebAPP.AssemblyInfoInputs.cache
+C:\Local\ProyectoFinalWebAPP\WebApplication1\obj\Debug\net6.0\ProyectoFinalWebAPP.AssemblyInfo.cs
+C:\Local\ProyectoFinalWebAPP\WebApplication1\obj\Debug\net6.0\ProyectoFinalWebAPP.csproj.CoreCompileInputs.cache
+C:\Local\ProyectoFinalWebAPP\WebApplication1\obj\Debug\net6.0\ProyectoFinalWebAPP.MvcApplicationPartsAssemblyInfo.cs
+C:\Local\ProyectoFinalWebAPP\WebApplication1\obj\Debug\net6.0\ProyectoFinalWebAPP.MvcApplicationPartsAssemblyInfo.cache

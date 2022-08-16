@@ -6,32 +6,30 @@ namespace ProyectoFinalWebAPP.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UsuarioController : ControllerBase
+    public class ProductoController : ControllerBase
     {
-        [HttpGet(Name = "GetUsuarios")]
-        public List<Usuario> GetUsuarios()
+        [HttpGet(Name = "GetProductos")]
+        public List<Producto> GetProductos()
         {
-            return new List<Usuario>() { new Usuario() { Apellido = "Lofiego", Contraseña = "123", Nombre = "Diego" } };
+            return new List<Producto>() { new Producto() { Apellido = "Lofiego", Contraseña = "123", Nombre = "Diego" } };
         }
 
         [HttpDelete]
         public void EliminarUsuario([FromBody] int id)
         {
-            
+
         }
 
         [HttpPut]
-        public void ModificarUsuario([FromBody] PutUsuario usuario)
+        public void ModificarUsuario([FromBody] PutProducto producto)
         {
 
         }
 
         [HttpPost]
-        public void ActualizarUsuario([FromBody] PostUsuario usuario)
+        public void ActualizarUsuario([FromBody] PostProducto producto)
         {
 
         }
-
     }
-
 }

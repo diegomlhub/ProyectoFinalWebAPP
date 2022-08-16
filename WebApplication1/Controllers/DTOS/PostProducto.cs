@@ -1,7 +1,6 @@
 ﻿namespace ProyectoFinalWebAPP.Controllers.DTOS
 {
-    public class PostUsuario
+    public class PostProducto
     {
-
     }
 }
