@@ -4,16 +4,18 @@ using System.Data.SqlClient;
 
 namespace ProyectoFinalWebAPP.Repositoy
 {
-    public class VentaHandler : DbHandler
+    public static class VentaHandler
     {
-        private Venta LeerVenta(SqlDataReader dataReader)
+        public const string ConnectionString = "Server=DESKTOP-MMRH9QD;Database=SistemaGestion;Trusted_Connection=True";
+
+        private static Venta LeerVenta(SqlDataReader dataReader)
         {
             Venta venta = new Venta(Convert.ToInt32(dataReader["Id"]), dataReader["Comentarios"].ToString());
 
             return venta;
         }
 
-        public Venta Get(long id)
+        public static Venta Get(long id)
         {
             Venta venta = new Venta();
 
@@ -42,7 +44,7 @@ namespace ProyectoFinalWebAPP.Repositoy
             return venta;
         }
 
-        public List<Venta> Get()
+        public static List<Venta> Get()
         {
             List<Venta> ventas = new List<Venta>();
 
@@ -70,7 +72,7 @@ namespace ProyectoFinalWebAPP.Repositoy
             return ventas;
         }
 
-        public void Delete(long id)
+        public static void Delete(long id)
         {
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
@@ -91,7 +93,7 @@ namespace ProyectoFinalWebAPP.Repositoy
             }
         }
 
-        public void Add(Venta venta)
+        public static void Add(Venta venta)
         {
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {

@@ -4,16 +4,18 @@ using System.Data.SqlClient;
 
 namespace ProyectoFinalWebAPP.Repositoy
 {
-    public class UsuarioHandler : DbHandler
+    public static class UsuarioHandler
     {
-        private Usuario LeerUsuario(SqlDataReader dataReader)
+        public const string ConnectionString = "Server=DESKTOP-MMRH9QD;Database=SistemaGestion;Trusted_Connection=True";
+
+        private static Usuario LeerUsuario(SqlDataReader dataReader)
         {
             Usuario usuario = new Usuario(Convert.ToInt32(dataReader["Id"]), dataReader["Nombre"].ToString(), dataReader["Apellido"].ToString(), dataReader["NombreUsuario"].ToString(), dataReader["Contraseña"].ToString(), dataReader["Mail"].ToString());
 
             return usuario;
         }
 
-        public Usuario Get(long id)
+        public static Usuario Get(long id)
         {
             Usuario usuario = new Usuario();
 
@@ -42,7 +44,7 @@ namespace ProyectoFinalWebAPP.Repositoy
             return usuario;
         }
 
-        public List<Usuario> Get()
+        public static List<Usuario> Get()
         {
             List<Usuario> usuarios = new List<Usuario>();
 
@@ -70,9 +72,9 @@ namespace ProyectoFinalWebAPP.Repositoy
             return usuarios;
         }
 
-        public Usuario GetByCotraseña(string userName, string userContrseña)
-        {
-            Usuario usuario = new Usuario();
+        public static bool login(string userName, string userContrseña)
+        {           
+            bool resultado = false;
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
@@ -88,21 +90,22 @@ namespace ProyectoFinalWebAPP.Repositoy
                     using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
                     {
                         if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
-                        {
-                            usuario = LeerUsuario(dataReader);
-                        }
+                        {                            
+                            resultado = true;
+                        }                       
                     }
 
                     sqlConnection.Close();
                 }
             }
 
-            return usuario;
+            return resultado;
         }
 
-
-        public void Delete(long id)
+        public static bool Delete(long id)
         {
+            bool resultado = false;
+
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[Usuario] WHERE Id = @id";
@@ -115,26 +118,35 @@ namespace ProyectoFinalWebAPP.Repositoy
                 using (SqlCommand sqlCommand = new SqlCommand(queryDelete, sqlConnection))
                 {
                     sqlCommand.Parameters.Add(sqlParameter);
-                    sqlCommand.ExecuteScalar(); // ejecuta el delete
+                    
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el delete
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
                 }
 
                 sqlConnection.Close();
             }
+            return resultado;
         }
 
-        public void Add(Usuario usuario)
+        public static bool Add(Usuario usuario)
         {
+            bool resultado = false;
+
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[Usuario] (Nombre, Apellido, NombreUsuario, Contraseña, Mail) VALUES (@Nombre, @Apellido, @NombreUsuario, @Contraseña, @Mail);";
+                string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[Usuario] (Nombre, Apellido, NombreUsuario, Contraseña, Mail) VALUES (@Nombre, @apellido, @NombreUsuario, @contraseña, @mail);";
 
                 List<SqlParameter> parameters = new List<SqlParameter>()
                 {
-                    new SqlParameter("Nombre", SqlDbType.VarChar) { Value = usuario.Nombre },
-                    new SqlParameter("Apellido", SqlDbType.VarChar) { Value = usuario.Apellido },
-                    new SqlParameter("NombreUsuario", SqlDbType.VarChar) { Value = usuario.NombreUsuario },
-                    new SqlParameter("Contraseña", SqlDbType.VarChar) { Value = usuario.Contraseña },
-                    new SqlParameter("Mail", SqlDbType.VarChar) { Value = usuario.Mail }
+                    new SqlParameter("nombre", SqlDbType.VarChar) { Value = usuario.Nombre },
+                    new SqlParameter("apellido", SqlDbType.VarChar) { Value = usuario.Apellido },
+                    new SqlParameter("nombreUsuario", SqlDbType.VarChar) { Value = usuario.NombreUsuario },
+                    new SqlParameter("contraseña", SqlDbType.VarChar) { Value = usuario.Contraseña },
+                    new SqlParameter("mail", SqlDbType.VarChar) { Value = usuario.Mail }
                 };
 
                 sqlConnection.Open();
@@ -146,11 +158,59 @@ namespace ProyectoFinalWebAPP.Repositoy
                         sqlCommand.Parameters.Add(paramter);
                     }
 
-                    sqlCommand.ExecuteNonQuery(); // ejecuta el insert
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el insert
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    } 
                 }
 
                 sqlConnection.Close();
             }
+            return resultado;
+        }
+
+        public static bool Update(Usuario usuario)
+        {
+            bool resultado = false;
+
+            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            {
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Usuario] SET Nombre = '@nombre', Apellido = '@apellido', NombreUsuario = '@nombreUsuario', Contraseña = '@contraseña', Mail = '@mail' WHERE Id = @id";
+
+                List<SqlParameter> parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("nombre", SqlDbType.VarChar) { Value = usuario.Nombre },
+                    new SqlParameter("apellido", SqlDbType.VarChar) { Value = usuario.Apellido },
+                    new SqlParameter("nombreUsuario", SqlDbType.VarChar) { Value = usuario.NombreUsuario },
+                    new SqlParameter("contraseña", SqlDbType.VarChar) { Value = usuario.Contraseña },
+                    new SqlParameter("mail", SqlDbType.VarChar) { Value = usuario.Mail },
+                    new SqlParameter("id", SqlDbType.VarChar) { Value = usuario.Id }
+                };
+
+                sqlConnection.Open();
+
+                using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
+                {
+                    foreach (SqlParameter paramter in parameters)
+                    {
+                        sqlCommand.Parameters.Add(paramter);
+                    }
+
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // Se ejecuta update
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
+                }
+
+                sqlConnection.Close();
+            }
+
+            return resultado;
         }
     }
+    
 }

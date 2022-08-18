@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProyectoFinalWebAPP.Controllers.DTOS;
 using ProyectoFinalWebAPP.Model;
+using ProyectoFinalWebAPP.Repositoy;
 
 namespace ProyectoFinalWebAPP.Controllers
 {
@@ -9,27 +10,64 @@ namespace ProyectoFinalWebAPP.Controllers
     public class UsuarioController : ControllerBase
     {
         [HttpGet(Name = "GetUsuarios")]
-        public List<Usuario> GetUsuarios()
+        public List<Usuario> Get()
         {
-            return new List<Usuario>() { new Usuario() { Apellido = "Lofiego", Contraseña = "123", Nombre = "Diego" } };
+            return UsuarioHandler.Get();            
         }
 
         [HttpDelete]
-        public void EliminarUsuario([FromBody] int id)
+        public bool Delete([FromBody] int id)
         {
-            
+            try
+            {
+                return UsuarioHandler.Delete(id);
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         [HttpPut]
-        public void ModificarUsuario([FromBody] PutUsuario usuario)
+        public bool Update([FromBody] PutUsuario usuario)
         {
-
+            try
+            {
+                return UsuarioHandler.Update(new Usuario
+                {
+                    Id = usuario.Id,
+                    Nombre = usuario.Nombre,
+                    Apellido = usuario.Apellido,
+                    NombreUsuario = usuario.NombreUsuario,
+                    Contraseña = usuario.Contraseña,
+                    Mail = usuario.Mail
+                });
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         [HttpPost]
-        public void ActualizarUsuario([FromBody] PostUsuario usuario)
+        public bool Add([FromBody] PostUsuario usuario)
         {
-
+            try
+            {
+                return UsuarioHandler.Add(new Usuario
+                {
+                    //Id = usuario.Id,
+                    Nombre = usuario.Nombre,
+                    Apellido = usuario.Apellido,
+                    NombreUsuario = usuario.NombreUsuario,
+                    Contraseña = usuario.Contraseña,
+                    Mail = usuario.Mail
+                });
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
     }

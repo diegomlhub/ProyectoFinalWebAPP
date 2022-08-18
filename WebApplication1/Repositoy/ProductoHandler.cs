@@ -4,16 +4,18 @@ using System.Data.SqlClient;
 
 namespace ProyectoFinalWebAPP.Repositoy
 {
-    public class ProductoHandler : DbHandler
+    public static class ProductoHandler
     {
-        private Producto LeerProducto(SqlDataReader dataReader)
+        public const string ConnectionString = "Server=DESKTOP-MMRH9QD;Database=SistemaGestion;Trusted_Connection=True";
+
+        public static Producto LeerProducto(SqlDataReader dataReader)
         {
             Producto producto = new Producto(Convert.ToInt32(dataReader["Id"]), dataReader["Descripciones"].ToString(), Convert.ToInt32(dataReader["Costo"]), Convert.ToInt32(dataReader["PrecioVenta"]), Convert.ToInt32(dataReader["Stock"]), Convert.ToInt32(dataReader["IdUsuario"]));
 
             return producto;
         }
 
-        public Producto Get(long id)
+        public static Producto Get(long id)
         {
             Producto producto = new Producto();
 
@@ -42,7 +44,7 @@ namespace ProyectoFinalWebAPP.Repositoy
             return producto;
         }
 
-        public List<Producto> Get()
+        public static List<Producto> Get()
         {
             List<Producto> productos = new List<Producto>();
 
@@ -70,8 +72,10 @@ namespace ProyectoFinalWebAPP.Repositoy
             return productos;
         }
 
-        public void Delete(long id)
+        public static bool Delete(long id)
         {
+            bool resultado = false;
+
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[Producto] WHERE Id = @id";
@@ -84,15 +88,24 @@ namespace ProyectoFinalWebAPP.Repositoy
                 using (SqlCommand sqlCommand = new SqlCommand(queryDelete, sqlConnection))
                 {
                     sqlCommand.Parameters.Add(sqlParameter);
-                    sqlCommand.ExecuteScalar(); // ejecuta el delete
+
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el delete
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
                 }
 
                 sqlConnection.Close();
             }
+            return resultado;
         }
 
-        public void Add(Producto producto)
+        public static bool Add(Producto producto)
         {
+            bool resultado = false;
+
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[Producto] (Descripciones, Costo, PrecioVenta, Stock, IdUsuario) VALUES (@Descripciones, @Costo, @PrecioVenta, @Stock, @IdUsuario);";
@@ -103,23 +116,70 @@ namespace ProyectoFinalWebAPP.Repositoy
                     new SqlParameter("Costo", SqlDbType.Int) { Value = producto.Costo },
                     new SqlParameter("PrecioVenta", SqlDbType.Int) { Value = producto.PrecioVenta },
                     new SqlParameter("Stock", SqlDbType.Int) { Value = producto.Stock },
-                    new SqlParameter("IdUsuario", SqlDbType.Int) { Value = producto.IdUsuario }
+                    new SqlParameter("IdUsuario", SqlDbType.BigInt) { Value = producto.IdUsuario }
                 };
 
                 sqlConnection.Open();
 
                 using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
                 {
-                    foreach (SqlParameter parameter in parameters)
+                    foreach (SqlParameter paramter in parameters)
                     {
-                        sqlCommand.Parameters.Add(parameter);
+                        sqlCommand.Parameters.Add(paramter);
                     }
 
-                    sqlCommand.ExecuteNonQuery(); // ejecuta el insert
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el insert
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
                 }
 
                 sqlConnection.Close();
             }
+            return resultado;
+        }
+
+        public static bool Update(Producto producto)
+        {
+            bool resultado = false;
+
+            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            {
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Producto] SET Descripciones = '@descripciones', Costo = '@costo', PrecioVenta = '@precioVenta', Stock = '@stock', IdUsuario = '@idUsuario' WHERE Id = @id";
+
+                List<SqlParameter> parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("descripciones", SqlDbType.VarChar) { Value = producto.Descripciones },
+                    new SqlParameter("costo", SqlDbType.Int) { Value = producto.Costo },
+                    new SqlParameter("precioVenta", SqlDbType.Int) { Value = producto.PrecioVenta },
+                    new SqlParameter("stock", SqlDbType.Int) { Value = producto.Stock },
+                    new SqlParameter("idUsuario", SqlDbType.BigInt) { Value = producto.IdUsuario },
+                    new SqlParameter("id", SqlDbType.BigInt) { Value = producto.Id }
+                };
+
+                sqlConnection.Open();
+
+                using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
+                {
+                    foreach (SqlParameter paramter in parameters)
+                    {
+                        sqlCommand.Parameters.Add(paramter);
+                    }
+
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // Se ejecuta update
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
+                }
+
+                sqlConnection.Close();
+            }
+
+            return resultado;
         }
     }
 }

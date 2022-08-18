@@ -4,16 +4,18 @@ using System.Data.SqlClient;
 
 namespace ProyectoFinalWebAPP.Repositoy
 {
-    public class ProductoVendidoHandler : DbHandler
+    public static class ProductoVendidoHandler
     {
-        private ProductoVendido LeerProductoVendido(SqlDataReader dataReader)
+        public const string ConnectionString = "Server=DESKTOP-MMRH9QD;Database=SistemaGestion;Trusted_Connection=True";
+
+        private static ProductoVendido LeerProductoVendido(SqlDataReader dataReader)
         {
             ProductoVendido productoVendido = new ProductoVendido(Convert.ToInt32(dataReader["Id"]), Convert.ToInt32(dataReader["Stock"]), Convert.ToInt32(dataReader["IdProducto"]), Convert.ToInt32(dataReader["IdVenta"]));
 
             return productoVendido;
         }
 
-        public ProductoVendido Get(long id)
+        public static ProductoVendido Get(long id)
         {
             ProductoVendido productoVendido = new ProductoVendido();
 
@@ -42,7 +44,7 @@ namespace ProyectoFinalWebAPP.Repositoy
             return productoVendido;
         }
 
-        public List<ProductoVendido> Get()
+        public static List<ProductoVendido> Get()
         {
             List<ProductoVendido> productosVendidos = new List<ProductoVendido>();
 
@@ -70,7 +72,7 @@ namespace ProyectoFinalWebAPP.Repositoy
             return productosVendidos;
         }
 
-        public void Delete(long id)
+        public static void Delete(long id)
         {
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
@@ -91,7 +93,7 @@ namespace ProyectoFinalWebAPP.Repositoy
             }
         }
 
-        public void Add(ProductoVendido productoVendido)
+        public static void Add(ProductoVendido productoVendido)
         {
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
