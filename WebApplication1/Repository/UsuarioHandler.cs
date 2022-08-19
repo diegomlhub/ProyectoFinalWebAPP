@@ -15,7 +15,7 @@ namespace ProyectoFinalWebAPP.Repository
             return usuario;
         }
 
-        public static Usuario Get(long id)
+        public static Usuario Get(string nombreUsuario)
         {
             Usuario usuario = new Usuario();
 
@@ -24,8 +24,8 @@ namespace ProyectoFinalWebAPP.Repository
                 using (SqlCommand sqlCommand = new SqlCommand())
                 {
                     sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Usuario] WHERE Id = @id";
-                    sqlCommand.Parameters.AddWithValue("@id", id);
+                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Usuario] WHERE NombreUsuario = @nombreUsuario";
+                    sqlCommand.Parameters.AddWithValue("@nombreUsuario", nombreUsuario);
 
                     sqlConnection.Open();
 
@@ -44,33 +44,33 @@ namespace ProyectoFinalWebAPP.Repository
             return usuario;
         }
 
-        public static List<Usuario> Get()
-        {
-            List<Usuario> usuarios = new List<Usuario>();
+        //public static List<Usuario> Get()
+        //{
+        //    List<Usuario> usuarios = new List<Usuario>();
 
-            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM [SistemaGestion].[dbo].[Usuario]", sqlConnection))
-                {
-                    sqlConnection.Open();
+        //    using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+        //    {
+        //        using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM [SistemaGestion].[dbo].[Usuario]", sqlConnection))
+        //        {
+        //            sqlConnection.Open();
 
-                    using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
-                    {
-                        if (dataReader.HasRows) //verifico que haya filas
-                        {
-                            while (dataReader.Read())
-                            {
-                                usuarios.Add(LeerUsuario(dataReader));
-                            }
-                        }
-                    }
+        //            using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+        //            {
+        //                if (dataReader.HasRows) //verifico que haya filas
+        //                {
+        //                    while (dataReader.Read())
+        //                    {
+        //                        usuarios.Add(LeerUsuario(dataReader));
+        //                    }
+        //                }
+        //            }
 
-                    sqlConnection.Close();
-                }
-            }
+        //            sqlConnection.Close();
+        //        }
+        //    }
 
-            return usuarios;
-        }
+        //    return usuarios;
+        //}
 
         public static bool login(string userName, string userContrseña)
         {           

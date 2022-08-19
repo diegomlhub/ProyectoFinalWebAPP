@@ -9,10 +9,10 @@ namespace ProyectoFinalWebAPP.Controllers
     [Route("[controller]")]
     public class UsuarioController : ControllerBase
     {
-        [HttpGet(Name = "GetUsuarios")]
-        public List<Usuario> Get()
+        [HttpGet(Name = "GetUsuario")]
+        public Usuario Get(string nombreUsuario)
         {
-            return UsuarioHandler.Get();            
+            return UsuarioHandler.Get(nombreUsuario);            
         }
 
         [HttpDelete]
@@ -55,8 +55,7 @@ namespace ProyectoFinalWebAPP.Controllers
             try
             {
                 return UsuarioHandler.Add(new Usuario
-                {
-                    //Id = usuario.Id,
+                {                   
                     Nombre = usuario.Nombre,
                     Apellido = usuario.Apellido,
                     NombreUsuario = usuario.NombreUsuario,

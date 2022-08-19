@@ -9,10 +9,10 @@ namespace ProyectoFinalWebAPP.Controllers
     [Route("[controller]")]
     public class ProductoController : ControllerBase
     {
-        [HttpGet(Name = "GetProductos")]
-        public List<Producto> Get()
+        [HttpGet(Name = "GetProductosByIdUsuario")]
+        public List<Producto> Get(long idUsuario)
         {
-            return ProductoHandler.Get();
+            return ProductoHandler.Get(idUsuario);
         }
 
         [HttpDelete]
@@ -54,9 +54,8 @@ namespace ProyectoFinalWebAPP.Controllers
         {
             try
             {
-                return ProductoHandler.Update(new Producto
-                {
-                    //Id = producto.Id,
+                return ProductoHandler.Add(new Producto
+                {                    
                     Descripciones = producto.Descripciones,
                     Costo = producto.Costo,
                     PrecioVenta = producto.PrecioVenta,

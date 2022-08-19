@@ -1,8 +1,7 @@
 ﻿namespace ProyectoFinalWebAPP.Controllers.DTOS
 {
     public class PostProducto
-    {
-        //public long Id { get; set; }
+    {        
         public string Descripciones { get; set; }
         public double Costo { get; set; }
         public double PrecioVenta { get; set; }

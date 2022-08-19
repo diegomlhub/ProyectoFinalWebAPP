@@ -7,7 +7,7 @@ namespace ProyectoFinalWebAPP.Repository
     public static class ProductoHandler
     {
         public const string ConnectionString = "Server=DESKTOP-MMRH9QD;Database=SistemaGestion;Trusted_Connection=True";
-
+        //Metodo interno LeerProducto() para ahorrar lineas de datareader y parameters.
         public static Producto LeerProducto(SqlDataReader dataReader)
         {
             Producto producto = new Producto(Convert.ToInt32(dataReader["Id"]), dataReader["Descripciones"].ToString(), Convert.ToInt32(dataReader["Costo"]), Convert.ToInt32(dataReader["PrecioVenta"]), Convert.ToInt32(dataReader["Stock"]), Convert.ToInt32(dataReader["IdUsuario"]));
@@ -15,43 +15,18 @@ namespace ProyectoFinalWebAPP.Repository
             return producto;
         }
 
-        public static Producto Get(long id)
+        public static List<Producto> Get(long idUsuario)
         {
-            Producto producto = new Producto();
+            List<Producto> productos = new List<Producto>();
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 using (SqlCommand sqlCommand = new SqlCommand())
                 {
                     sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Producto] WHERE Id = @id";
-                    sqlCommand.Parameters.AddWithValue("@id", id);
+                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Producto] WHERE IdUsuario = @idUsuario";
+                    sqlCommand.Parameters.AddWithValue("@idUsuario", idUsuario);
 
-                    sqlConnection.Open();
-
-                    using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
-                    {
-                        if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
-                        {
-                            producto = LeerProducto(dataReader);
-                        }
-                    }
-
-                    sqlConnection.Close();
-                }
-            }
-
-            return producto;
-        }
-
-        public static List<Producto> Get()
-        {
-            List<Producto> productos = new List<Producto>();
-
-            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM [SistemaGestion].[dbo].[Producto]", sqlConnection))
-                {
                     sqlConnection.Open();
 
                     using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
@@ -71,7 +46,7 @@ namespace ProyectoFinalWebAPP.Repository
 
             return productos;
         }
-
+                
         public static bool Delete(long id)
         {
             bool resultado = false;
@@ -113,8 +88,8 @@ namespace ProyectoFinalWebAPP.Repository
                 List<SqlParameter> parameters = new List<SqlParameter>()
                 {
                     new SqlParameter("Descripciones", SqlDbType.VarChar) { Value = producto.Descripciones },
-                    new SqlParameter("Costo", SqlDbType.Int) { Value = producto.Costo },
-                    new SqlParameter("PrecioVenta", SqlDbType.Int) { Value = producto.PrecioVenta },
+                    new SqlParameter("Costo", SqlDbType.Money) { Value = producto.Costo },
+                    new SqlParameter("PrecioVenta", SqlDbType.Money) { Value = producto.PrecioVenta },
                     new SqlParameter("Stock", SqlDbType.Int) { Value = producto.Stock },
                     new SqlParameter("IdUsuario", SqlDbType.BigInt) { Value = producto.IdUsuario }
                 };
@@ -147,16 +122,16 @@ namespace ProyectoFinalWebAPP.Repository
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Producto] SET Descripciones = '@descripciones', Costo = '@costo', PrecioVenta = '@precioVenta', Stock = '@stock', IdUsuario = '@idUsuario' WHERE Id = @id";
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Producto] SET Descripciones = @descripciones, Costo = @costo, PrecioVenta = @precioVenta, Stock = @stock, IdUsuario = @idUsuario WHERE Id = @id";
 
                 List<SqlParameter> parameters = new List<SqlParameter>()
                 {
+                    new SqlParameter("id", SqlDbType.BigInt) { Value = producto.Id },
                     new SqlParameter("descripciones", SqlDbType.VarChar) { Value = producto.Descripciones },
-                    new SqlParameter("costo", SqlDbType.Int) { Value = producto.Costo },
-                    new SqlParameter("precioVenta", SqlDbType.Int) { Value = producto.PrecioVenta },
+                    new SqlParameter("costo", SqlDbType.Money) { Value = producto.Costo },
+                    new SqlParameter("precioVenta", SqlDbType.Money) { Value = producto.PrecioVenta },
                     new SqlParameter("stock", SqlDbType.Int) { Value = producto.Stock },
-                    new SqlParameter("idUsuario", SqlDbType.BigInt) { Value = producto.IdUsuario },
-                    new SqlParameter("id", SqlDbType.BigInt) { Value = producto.Id }
+                    new SqlParameter("idUsuario", SqlDbType.BigInt) { Value = producto.IdUsuario }                    
                 };
 
                 sqlConnection.Open();

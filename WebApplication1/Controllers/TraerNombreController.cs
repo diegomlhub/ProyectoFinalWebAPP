@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace ProyectoFinalWebAPP.Controllers.DTOS
+namespace ProyectoFinalWebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]

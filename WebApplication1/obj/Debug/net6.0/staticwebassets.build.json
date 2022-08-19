@@ -1,8 +1,8 @@
 {
   "Version": 1,
-  "Hash": "S5gPWbglz5biLnBZ2vBWNMelrfmPS5yvDNTWX95/gwg=",
-  "Source": "ProyectoFinalWebAPP",
-  "BasePath": "_content/ProyectoFinalWebAPP",
+  "Hash": "5NX1qaje0wlArqStkX+KJmFHm36RONyMqB2xmvvzd2E=",
+  "Source": "ProyectoFinalWebAPI",
+  "BasePath": "_content/ProyectoFinalWebAPI",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
