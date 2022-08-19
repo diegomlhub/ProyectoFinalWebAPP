@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ProyectoFinalWebAPP.Controllers.DTOS;
 using ProyectoFinalWebAPP.Model;
-using ProyectoFinalWebAPP.ADO.NET;
+using ProyectoFinalWebAPP.Repository;
 
 namespace ProyectoFinalWebAPP.Controllers
 {

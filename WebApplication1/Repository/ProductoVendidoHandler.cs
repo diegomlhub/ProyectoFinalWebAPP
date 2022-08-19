@@ -2,29 +2,29 @@
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ProyectoFinalWebAPP.ADO.NET
+namespace ProyectoFinalWebAPP.Repository
 {
-    public static class VentaHandler
+    public static class ProductoVendidoHandler
     {
         public const string ConnectionString = "Server=DESKTOP-MMRH9QD;Database=SistemaGestion;Trusted_Connection=True";
 
-        private static Venta LeerVenta(SqlDataReader dataReader)
+        private static ProductoVendido LeerProductoVendido(SqlDataReader dataReader)
         {
-            Venta venta = new Venta(Convert.ToInt32(dataReader["Id"]), dataReader["Comentarios"].ToString());
+            ProductoVendido productoVendido = new ProductoVendido(Convert.ToInt32(dataReader["Id"]), Convert.ToInt32(dataReader["Stock"]), Convert.ToInt32(dataReader["IdProducto"]), Convert.ToInt32(dataReader["IdVenta"]));
 
-            return venta;
+            return productoVendido;
         }
 
-        public static Venta Get(long id)
+        public static ProductoVendido Get(long id)
         {
-            Venta venta = new Venta();
+            ProductoVendido productoVendido = new ProductoVendido();
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 using (SqlCommand sqlCommand = new SqlCommand())
                 {
                     sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Venta] WHERE Id = @id";
+                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[ProductoVendido] WHERE Id = @id";
                     sqlCommand.Parameters.AddWithValue("@id", id);
 
                     sqlConnection.Open();
@@ -33,7 +33,7 @@ namespace ProyectoFinalWebAPP.ADO.NET
                     {
                         if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
                         {
-                            venta = LeerVenta(dataReader);
+                            productoVendido = LeerProductoVendido(dataReader);
                         }
                     }
 
@@ -41,16 +41,16 @@ namespace ProyectoFinalWebAPP.ADO.NET
                 }
             }
 
-            return venta;
+            return productoVendido;
         }
 
-        public static List<Venta> Get()
+        public static List<ProductoVendido> Get()
         {
-            List<Venta> ventas = new List<Venta>();
+            List<ProductoVendido> productosVendidos = new List<ProductoVendido>();
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM [SistemaGestion].[dbo].[Venta]", sqlConnection))
+                using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM [SistemaGestion].[dbo].[ProductoVendido]", sqlConnection))
                 {
                     sqlConnection.Open();
 
@@ -60,7 +60,7 @@ namespace ProyectoFinalWebAPP.ADO.NET
                         {
                             while (dataReader.Read())
                             {
-                                ventas.Add(LeerVenta(dataReader));
+                                productosVendidos.Add(LeerProductoVendido(dataReader));
                             }
                         }
                     }
@@ -69,14 +69,14 @@ namespace ProyectoFinalWebAPP.ADO.NET
                 }
             }
 
-            return ventas;
+            return productosVendidos;
         }
 
         public static void Delete(long id)
         {
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[Venta] WHERE Id = @id";
+                string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[ProductoVendido] WHERE Id = @id";
 
                 SqlParameter sqlParameter = new SqlParameter("id", SqlDbType.BigInt);
                 sqlParameter.Value = id;
@@ -93,24 +93,34 @@ namespace ProyectoFinalWebAPP.ADO.NET
             }
         }
 
-        public static void Add(Venta venta)
+        public static void Add(ProductoVendido productoVendido)
         {
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[Venta] (Comentarios) VALUES (@Comentarios);";
+                string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[ProductoVendido] (Stock, IdProducto, IdVenta) VALUES (@Stock, @IdProducto, @IdVenta);";
 
-                SqlParameter parameters = new SqlParameter("Comentarios", SqlDbType.VarChar) { Value = venta.Comentarios };
+                List<SqlParameter> parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("Stock", SqlDbType.Int) { Value = productoVendido.Stock },
+                    new SqlParameter("IdProducto", SqlDbType.Int) { Value = productoVendido.IdProducto },
+                    new SqlParameter("IdVenta", SqlDbType.Int) { Value = productoVendido.IdVenta },
+                };
 
                 sqlConnection.Open();
 
                 using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
                 {
-                    sqlCommand.Parameters.Add(parameters);
+                    foreach (SqlParameter parameter in parameters)
+                    {
+                        sqlCommand.Parameters.Add(parameter);
+                    }
+
                     sqlCommand.ExecuteNonQuery(); // ejecuta el insert
                 }
 
                 sqlConnection.Close();
             }
+
         }
     }
 }
