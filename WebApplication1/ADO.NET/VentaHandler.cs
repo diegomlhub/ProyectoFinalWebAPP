@@ -2,7 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ProyectoFinalWebAPP.Repositoy
+namespace ProyectoFinalWebAPP.ADO.NET
 {
     public static class VentaHandler
     {

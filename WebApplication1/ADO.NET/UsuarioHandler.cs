@@ -2,29 +2,29 @@
 using System.Data;
 using System.Data.SqlClient;
 
-namespace ProyectoFinalWebAPP.Repositoy
+namespace ProyectoFinalWebAPP.ADO.NET
 {
-    public static class ProductoHandler
+    public static class UsuarioHandler
     {
         public const string ConnectionString = "Server=DESKTOP-MMRH9QD;Database=SistemaGestion;Trusted_Connection=True";
 
-        public static Producto LeerProducto(SqlDataReader dataReader)
+        private static Usuario LeerUsuario(SqlDataReader dataReader)
         {
-            Producto producto = new Producto(Convert.ToInt32(dataReader["Id"]), dataReader["Descripciones"].ToString(), Convert.ToInt32(dataReader["Costo"]), Convert.ToInt32(dataReader["PrecioVenta"]), Convert.ToInt32(dataReader["Stock"]), Convert.ToInt32(dataReader["IdUsuario"]));
+            Usuario usuario = new Usuario(Convert.ToInt32(dataReader["Id"]), dataReader["Nombre"].ToString(), dataReader["Apellido"].ToString(), dataReader["NombreUsuario"].ToString(), dataReader["Contraseña"].ToString(), dataReader["Mail"].ToString());
 
-            return producto;
+            return usuario;
         }
 
-        public static Producto Get(long id)
+        public static Usuario Get(long id)
         {
-            Producto producto = new Producto();
+            Usuario usuario = new Usuario();
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 using (SqlCommand sqlCommand = new SqlCommand())
                 {
                     sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Producto] WHERE Id = @id";
+                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Usuario] WHERE Id = @id";
                     sqlCommand.Parameters.AddWithValue("@id", id);
 
                     sqlConnection.Open();
@@ -33,7 +33,7 @@ namespace ProyectoFinalWebAPP.Repositoy
                     {
                         if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
                         {
-                            producto = LeerProducto(dataReader);
+                            usuario = LeerUsuario(dataReader);
                         }
                     }
 
@@ -41,16 +41,16 @@ namespace ProyectoFinalWebAPP.Repositoy
                 }
             }
 
-            return producto;
+            return usuario;
         }
 
-        public static List<Producto> Get()
+        public static List<Usuario> Get()
         {
-            List<Producto> productos = new List<Producto>();
+            List<Usuario> usuarios = new List<Usuario>();
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM [SistemaGestion].[dbo].[Producto]", sqlConnection))
+                using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM [SistemaGestion].[dbo].[Usuario]", sqlConnection))
                 {
                     sqlConnection.Open();
 
@@ -60,7 +60,7 @@ namespace ProyectoFinalWebAPP.Repositoy
                         {
                             while (dataReader.Read())
                             {
-                                productos.Add(LeerProducto(dataReader));
+                                usuarios.Add(LeerUsuario(dataReader));
                             }
                         }
                     }
@@ -69,7 +69,37 @@ namespace ProyectoFinalWebAPP.Repositoy
                 }
             }
 
-            return productos;
+            return usuarios;
+        }
+
+        public static bool login(string userName, string userContrseña)
+        {           
+            bool resultado = false;
+
+            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Usuario] WHERE NombreUsuario = @nombreUsuario AND Contraseña = @contraseña";
+                    sqlCommand.Parameters.AddWithValue("@nombreUsuario", userName);
+                    sqlCommand.Parameters.AddWithValue("@contraseña", userContrseña);
+
+                    sqlConnection.Open();
+
+                    using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+                    {
+                        if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
+                        {                            
+                            resultado = true;
+                        }                       
+                    }
+
+                    sqlConnection.Close();
+                }
+            }
+
+            return resultado;
         }
 
         public static bool Delete(long id)
@@ -78,7 +108,7 @@ namespace ProyectoFinalWebAPP.Repositoy
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[Producto] WHERE Id = @id";
+                string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[Usuario] WHERE Id = @id";
 
                 SqlParameter sqlParameter = new SqlParameter("id", SqlDbType.BigInt);
                 sqlParameter.Value = id;
@@ -88,7 +118,7 @@ namespace ProyectoFinalWebAPP.Repositoy
                 using (SqlCommand sqlCommand = new SqlCommand(queryDelete, sqlConnection))
                 {
                     sqlCommand.Parameters.Add(sqlParameter);
-
+                    
                     int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el delete
 
                     if (numerosDeRegistros > 0)
@@ -102,21 +132,21 @@ namespace ProyectoFinalWebAPP.Repositoy
             return resultado;
         }
 
-        public static bool Add(Producto producto)
+        public static bool Add(Usuario usuario)
         {
             bool resultado = false;
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[Producto] (Descripciones, Costo, PrecioVenta, Stock, IdUsuario) VALUES (@Descripciones, @Costo, @PrecioVenta, @Stock, @IdUsuario);";
+                string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[Usuario] (Nombre, Apellido, NombreUsuario, Contraseña, Mail) VALUES (@Nombre, @apellido, @NombreUsuario, @contraseña, @mail);";
 
                 List<SqlParameter> parameters = new List<SqlParameter>()
                 {
-                    new SqlParameter("Descripciones", SqlDbType.VarChar) { Value = producto.Descripciones },
-                    new SqlParameter("Costo", SqlDbType.Int) { Value = producto.Costo },
-                    new SqlParameter("PrecioVenta", SqlDbType.Int) { Value = producto.PrecioVenta },
-                    new SqlParameter("Stock", SqlDbType.Int) { Value = producto.Stock },
-                    new SqlParameter("IdUsuario", SqlDbType.BigInt) { Value = producto.IdUsuario }
+                    new SqlParameter("nombre", SqlDbType.VarChar) { Value = usuario.Nombre },
+                    new SqlParameter("apellido", SqlDbType.VarChar) { Value = usuario.Apellido },
+                    new SqlParameter("nombreUsuario", SqlDbType.VarChar) { Value = usuario.NombreUsuario },
+                    new SqlParameter("contraseña", SqlDbType.VarChar) { Value = usuario.Contraseña },
+                    new SqlParameter("mail", SqlDbType.VarChar) { Value = usuario.Mail }
                 };
 
                 sqlConnection.Open();
@@ -133,7 +163,7 @@ namespace ProyectoFinalWebAPP.Repositoy
                     if (numerosDeRegistros > 0)
                     {
                         resultado = true;
-                    }
+                    } 
                 }
 
                 sqlConnection.Close();
@@ -141,22 +171,22 @@ namespace ProyectoFinalWebAPP.Repositoy
             return resultado;
         }
 
-        public static bool Update(Producto producto)
+        public static bool Update(Usuario usuario)
         {
             bool resultado = false;
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Producto] SET Descripciones = '@descripciones', Costo = '@costo', PrecioVenta = '@precioVenta', Stock = '@stock', IdUsuario = '@idUsuario' WHERE Id = @id";
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Usuario] SET Nombre = '@nombre', Apellido = '@apellido', NombreUsuario = '@nombreUsuario', Contraseña = '@contraseña', Mail = '@mail' WHERE Id = @id";
 
                 List<SqlParameter> parameters = new List<SqlParameter>()
                 {
-                    new SqlParameter("descripciones", SqlDbType.VarChar) { Value = producto.Descripciones },
-                    new SqlParameter("costo", SqlDbType.Int) { Value = producto.Costo },
-                    new SqlParameter("precioVenta", SqlDbType.Int) { Value = producto.PrecioVenta },
-                    new SqlParameter("stock", SqlDbType.Int) { Value = producto.Stock },
-                    new SqlParameter("idUsuario", SqlDbType.BigInt) { Value = producto.IdUsuario },
-                    new SqlParameter("id", SqlDbType.BigInt) { Value = producto.Id }
+                    new SqlParameter("nombre", SqlDbType.VarChar) { Value = usuario.Nombre },
+                    new SqlParameter("apellido", SqlDbType.VarChar) { Value = usuario.Apellido },
+                    new SqlParameter("nombreUsuario", SqlDbType.VarChar) { Value = usuario.NombreUsuario },
+                    new SqlParameter("contraseña", SqlDbType.VarChar) { Value = usuario.Contraseña },
+                    new SqlParameter("mail", SqlDbType.VarChar) { Value = usuario.Mail },
+                    new SqlParameter("id", SqlDbType.VarChar) { Value = usuario.Id }
                 };
 
                 sqlConnection.Open();
@@ -182,4 +212,5 @@ namespace ProyectoFinalWebAPP.Repositoy
             return resultado;
         }
     }
+    
 }

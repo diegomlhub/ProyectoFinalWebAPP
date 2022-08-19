@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebApi.csproj": {}
+    "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebAPI.csproj": {}
   },
   "projects": {
-    "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebApi.csproj": {
+    "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebApi.csproj",
-        "projectName": "ProyectoFinalWebApi",
-        "projectPath": "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebApi.csproj",
+        "projectUniqueName": "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebAPI.csproj",
+        "projectName": "ProyectoFinalWebAPI",
+        "projectPath": "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebAPI.csproj",
         "packagesPath": "C:\\Users\\diego\\.nuget\\packages\\",
         "outputPath": "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\obj\\",
         "projectStyle": "PackageReference",

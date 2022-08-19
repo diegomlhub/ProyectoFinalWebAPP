@@ -689,9 +689,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebAPP.csproj",
-      "projectName": "ProyectoFinalWebAPP",
-      "projectPath": "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebAPP.csproj",
+      "projectUniqueName": "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebAPI.csproj",
+      "projectName": "ProyectoFinalWebAPI",
+      "projectPath": "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\ProyectoFinalWebAPI.csproj",
       "packagesPath": "C:\\Users\\diego\\.nuget\\packages\\",
       "outputPath": "C:\\Local\\ProyectoFinalWebAPP\\WebApplication1\\obj\\",
       "projectStyle": "PackageReference",
