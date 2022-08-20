@@ -15,43 +15,47 @@ namespace ProyectoFinalWebAPP.Repository
             return venta;
         }
 
-        public static Venta Get(long id)
+        //public static Venta Get(long id)
+        //{
+        //    Venta venta = new Venta();
+
+        //    using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+        //    {
+        //        using (SqlCommand sqlCommand = new SqlCommand())
+        //        {
+        //            sqlCommand.Connection = sqlConnection;
+        //            sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Venta] WHERE Id = @id";
+        //            sqlCommand.Parameters.AddWithValue("@id", id);
+
+        //            sqlConnection.Open();
+
+        //            using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+        //            {
+        //                if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
+        //                {
+        //                    venta = LeerVenta(dataReader);
+        //                }
+        //            }
+
+        //            sqlConnection.Close();
+        //        }
+        //    }
+
+        //    return venta;
+        //}
+        
+       
+        public static List<Venta> Get(long idUsuario)
         {
-            Venta venta = new Venta();
+            List<Venta> ventas = new List<Venta>();
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 using (SqlCommand sqlCommand = new SqlCommand())
                 {
                     sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Venta] WHERE Id = @id";
-                    sqlCommand.Parameters.AddWithValue("@id", id);
-
-                    sqlConnection.Open();
-
-                    using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
-                    {
-                        if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
-                        {
-                            venta = LeerVenta(dataReader);
-                        }
-                    }
-
-                    sqlConnection.Close();
-                }
-            }
-
-            return venta;
-        }
-
-        public static List<Venta> Get()
-        {
-            List<Venta> ventas = new List<Venta>();
-
-            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM [SistemaGestion].[dbo].[Venta]", sqlConnection))
-                {
+                    sqlCommand.CommandText = "SELECT v.Id, v.Comentarios FROM [SistemaGestion].[dbo].[ProductoVendido] AS pv INNER JOIN [SistemaGestion].[dbo].[Producto] AS p ON p.Id = pv.IdProducto INNER JOIN [SistemaGestion].[dbo].[Venta] AS v ON v.Id = pv.IdVenta WHERE IdUsuario = @idUsuario;";
+                    sqlCommand.Parameters.AddWithValue("@idUsuario", idUsuario);
                     sqlConnection.Open();
 
                     using (SqlDataReader dataReader = sqlCommand.ExecuteReader())

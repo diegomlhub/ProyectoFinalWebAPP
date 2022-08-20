@@ -72,9 +72,9 @@ namespace ProyectoFinalWebAPP.Repository
         //    return usuarios;
         //}
 
-        public static bool login(string userName, string userContrseña)
-        {           
-            bool resultado = false;
+        public static Usuario Auth(string userName, string userContrseña)
+        {
+            Usuario usuario = new Usuario();
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
@@ -90,8 +90,8 @@ namespace ProyectoFinalWebAPP.Repository
                     using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
                     {
                         if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
-                        {                            
-                            resultado = true;
+                        {
+                            usuario = LeerUsuario(dataReader);
                         }                       
                     }
 
@@ -99,7 +99,7 @@ namespace ProyectoFinalWebAPP.Repository
                 }
             }
 
-            return resultado;
+            return usuario;
         }
 
         public static bool Delete(long id)

@@ -10,7 +10,7 @@ namespace ProyectoFinalWebAPP.Repository
         //Metodo interno LeerProducto() para ahorrar lineas de datareader y parameters.
         public static Producto LeerProducto(SqlDataReader dataReader)
         {
-            Producto producto = new Producto(Convert.ToInt32(dataReader["Id"]), dataReader["Descripciones"].ToString(), Convert.ToInt32(dataReader["Costo"]), Convert.ToInt32(dataReader["PrecioVenta"]), Convert.ToInt32(dataReader["Stock"]), Convert.ToInt32(dataReader["IdUsuario"]));
+            Producto producto = new Producto(Convert.ToInt32(dataReader["Id"]), dataReader["Descripciones"].ToString(), Convert.ToDouble(dataReader["Costo"]), Convert.ToDouble(dataReader["PrecioVenta"]), Convert.ToInt32(dataReader["Stock"]), Convert.ToInt32(dataReader["IdUsuario"]));
 
             return producto;
         }

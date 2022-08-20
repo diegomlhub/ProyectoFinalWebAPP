@@ -4,12 +4,12 @@ namespace ProyectoFinalWebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class TraerNombreController : ControllerBase
+    public class AppInfoController : ControllerBase
     {
         [HttpGet]
-        public string TraerNombre()
+        public string AppInfo()
         {
-            return "Proyecto Final Web Api";
+            return "Proyecto Final Web Api 1.0";
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ProyectoFinalWebAPP.Model;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace ProyectoFinalWebAPP.Repository
@@ -15,43 +16,48 @@ namespace ProyectoFinalWebAPP.Repository
             return productoVendido;
         }
 
-        public static ProductoVendido Get(long id)
-        {
-            ProductoVendido productoVendido = new ProductoVendido();
+        //public static ProductoVendido Get(long id)
+        //{
+        //    ProductoVendido productoVendido = new ProductoVendido();
 
-            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
-            {
-                using (SqlCommand sqlCommand = new SqlCommand())
-                {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[ProductoVendido] WHERE Id = @id";
-                    sqlCommand.Parameters.AddWithValue("@id", id);
+        //    using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+        //    {
+        //        using (SqlCommand sqlCommand = new SqlCommand())
+        //        {
+        //            sqlCommand.Connection = sqlConnection;
+        //            sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[ProductoVendido] WHERE Id = @id";
+        //            sqlCommand.Parameters.AddWithValue("@id", id);
 
-                    sqlConnection.Open();
+        //            sqlConnection.Open();
 
-                    using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
-                    {
-                        if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
-                        {
-                            productoVendido = LeerProductoVendido(dataReader);
-                        }
-                    }
+        //            using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+        //            {
+        //                if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
+        //                {
+        //                    productoVendido = LeerProductoVendido(dataReader);
+        //                }
+        //            }
 
-                    sqlConnection.Close();
-                }
-            }
+        //            sqlConnection.Close();
+        //        }
+        //    }
 
-            return productoVendido;
-        }
+        //    return productoVendido;
+        //}
 
-        public static List<ProductoVendido> Get()
+        public static List<ProductoVendido> Get(long idUsuario)
         {
             List<ProductoVendido> productosVendidos = new List<ProductoVendido>();
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM [SistemaGestion].[dbo].[ProductoVendido]", sqlConnection))
+                
+
+                using (SqlCommand sqlCommand = new SqlCommand())
                 {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandText = "SELECT pv.Id, pv.Stock, pv.IdProducto, pv.IdVenta FROM[SistemaGestion].[dbo].[ProductoVendido] AS pv INNER JOIN[SistemaGestion].[dbo].[Producto] AS p ON pv.IdProducto = p.Id WHERE IdUsuario = @idUsuario;";
+                    sqlCommand.Parameters.AddWithValue("@idUsuario", idUsuario);
                     sqlConnection.Open();
 
                     using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
@@ -72,8 +78,10 @@ namespace ProyectoFinalWebAPP.Repository
             return productosVendidos;
         }
 
-        public static void Delete(long id)
+        public static bool Delete(long id)
         {
+            bool resultado = false;
+
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[ProductoVendido] WHERE Id = @id";
@@ -86,15 +94,24 @@ namespace ProyectoFinalWebAPP.Repository
                 using (SqlCommand sqlCommand = new SqlCommand(queryDelete, sqlConnection))
                 {
                     sqlCommand.Parameters.Add(sqlParameter);
-                    sqlCommand.ExecuteScalar(); // ejecuta el delete
+
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el delete
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
                 }
 
                 sqlConnection.Close();
             }
+            return resultado;
         }
 
-        public static void Add(ProductoVendido productoVendido)
+        public static bool Add(ProductoVendido productoVendido)
         {
+            bool resultado = false;
+
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[ProductoVendido] (Stock, IdProducto, IdVenta) VALUES (@Stock, @IdProducto, @IdVenta);";
@@ -110,17 +127,62 @@ namespace ProyectoFinalWebAPP.Repository
 
                 using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
                 {
-                    foreach (SqlParameter parameter in parameters)
+                    foreach (SqlParameter paramter in parameters)
                     {
-                        sqlCommand.Parameters.Add(parameter);
+                        sqlCommand.Parameters.Add(paramter);
                     }
 
-                    sqlCommand.ExecuteNonQuery(); // ejecuta el insert
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el insert
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
+                }
+
+                sqlConnection.Close();
+            }
+            return resultado;
+
+        }
+
+        public static bool Update(ProductoVendido productoVendido)
+        {
+            bool resultado = false;
+
+            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            {
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[ProductoVedido] SET Stock = @stock, IdProducto = @idProducto, idVenta = @idVenta WHERE Id = @id";
+
+                List<SqlParameter> parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("id", SqlDbType.BigInt) { Value = productoVendido.Id },
+                    new SqlParameter("stck", SqlDbType.BigInt) { Value = productoVendido.Stock },
+                    new SqlParameter("idProducto", SqlDbType.BigInt) { Value = productoVendido.IdProducto },
+                    new SqlParameter("idVenta", SqlDbType.BigInt) { Value = productoVendido.IdVenta }
+                };
+
+                sqlConnection.Open();
+
+                using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
+                {
+                    foreach (SqlParameter paramter in parameters)
+                    {
+                        sqlCommand.Parameters.Add(paramter);
+                    }
+
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // Se ejecuta update
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
                 }
 
                 sqlConnection.Close();
             }
 
+            return resultado;
         }
     }
 }
