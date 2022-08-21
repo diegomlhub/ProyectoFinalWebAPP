@@ -17,31 +17,35 @@ namespace ProyectoFinalWebAPP.Repository
                
         public static List<ProductoVendido> Get(long idUsuario)
         {
+            List<Producto> productos = ProductoHandler.Get(idUsuario); //Funcion de traer producto por idUusario
+
             List<ProductoVendido> productosVendidos = new List<ProductoVendido>();
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                
-
-                using (SqlCommand sqlCommand = new SqlCommand())
+                foreach (Producto producto in productos) //recorro la lista de productos por idUsuario y utilizo el id de cada producto para saber que producto vendido traer.
                 {
-                    sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandText = "SELECT pv.Id, pv.Stock, pv.IdProducto, pv.IdVenta FROM[SistemaGestion].[dbo].[ProductoVendido] AS pv INNER JOIN[SistemaGestion].[dbo].[Producto] AS p ON pv.IdProducto = p.Id WHERE IdUsuario = @idUsuario;";
-                    sqlCommand.Parameters.AddWithValue("@idUsuario", idUsuario);
-                    sqlConnection.Open();
+                    using (SqlCommand sqlCommand = new SqlCommand())
+                    {                       
+                        sqlCommand.Connection = sqlConnection;
+                        sqlCommand.CommandText = "SELECT * FROM[SistemaGestion].[dbo].[ProductoVendido] WHERE IdProducto = @idProducto;";
+                        sqlCommand.Parameters.AddWithValue("@idProducto", producto.Id);//idProducto de tabla ProductoVendido = id del producto que se busco por usuario. 
+                        sqlConnection.Open();
 
-                    using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
-                    {
-                        if (dataReader.HasRows) //verifico que haya filas
+                        using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
                         {
-                            while (dataReader.Read())
+                            if (dataReader.HasRows) //verifico que haya filas
                             {
-                                productosVendidos.Add(LeerProductoVendido(dataReader));
+                                while (dataReader.Read())//agrego a la lista de productosVedidos todos los Productos Vendidos con idProducto iguales, por cada pasada del foreach se repite.
+                                {
+                                    productosVendidos.Add(LeerProductoVendido(dataReader));
+                                }
                             }
                         }
-                    }
 
-                    sqlConnection.Close();
+                        sqlConnection.Close();
+                    }
+       
                 }
             }
 

@@ -24,7 +24,7 @@ namespace ProyectoFinalWebAPP.Repository
                 using (SqlCommand sqlCommand = new SqlCommand())
                 {
                     sqlCommand.Connection = sqlConnection;
-                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Producto] WHERE IdUsuario = @idUsuario";
+                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Producto] WHERE IdUsuario = @idUsuario;";
                     sqlCommand.Parameters.AddWithValue("@idUsuario", idUsuario);
 
                     sqlConnection.Open();
@@ -53,7 +53,7 @@ namespace ProyectoFinalWebAPP.Repository
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[Producto] WHERE Id = @id";
+                string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[Producto] WHERE Id = @id;";
 
                 SqlParameter sqlParameter = new SqlParameter("id", SqlDbType.BigInt);
                 sqlParameter.Value = id;
@@ -122,7 +122,7 @@ namespace ProyectoFinalWebAPP.Repository
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Producto] SET Descripciones = @descripciones, Costo = @costo, PrecioVenta = @precioVenta, Stock = @stock, IdUsuario = @idUsuario WHERE Id = @id";
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Producto] SET Descripciones = @descripciones, Costo = @costo, PrecioVenta = @precioVenta, Stock = @stock, IdUsuario = @idUsuario WHERE Id = @id;";
 
                 List<SqlParameter> parameters = new List<SqlParameter>()
                 {
