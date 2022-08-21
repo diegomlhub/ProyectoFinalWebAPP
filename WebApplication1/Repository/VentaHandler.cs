@@ -15,36 +15,6 @@ namespace ProyectoFinalWebAPP.Repository
             return venta;
         }
 
-        //public static Venta Get(long id)
-        //{
-        //    Venta venta = new Venta();
-
-        //    using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
-        //    {
-        //        using (SqlCommand sqlCommand = new SqlCommand())
-        //        {
-        //            sqlCommand.Connection = sqlConnection;
-        //            sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Venta] WHERE Id = @id";
-        //            sqlCommand.Parameters.AddWithValue("@id", id);
-
-        //            sqlConnection.Open();
-
-        //            using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
-        //            {
-        //                if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
-        //                {
-        //                    venta = LeerVenta(dataReader);
-        //                }
-        //            }
-
-        //            sqlConnection.Close();
-        //        }
-        //    }
-
-        //    return venta;
-        //}
-        
-       
         public static List<Venta> Get(long idUsuario)
         {
             List<Venta> ventas = new List<Venta>();
@@ -76,11 +46,13 @@ namespace ProyectoFinalWebAPP.Repository
             return ventas;
         }
 
-        public static void Delete(long id)
+        public static bool Delete(long id)
         {
+            bool resultado = false;
+
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[Venta] WHERE Id = @id";
+                string queryDelete = "DELETE FROM [SistemaGestion].[dbo].[Venta] WHERE Id = @id;";
 
                 SqlParameter sqlParameter = new SqlParameter("id", SqlDbType.BigInt);
                 sqlParameter.Value = id;
@@ -90,15 +62,24 @@ namespace ProyectoFinalWebAPP.Repository
                 using (SqlCommand sqlCommand = new SqlCommand(queryDelete, sqlConnection))
                 {
                     sqlCommand.Parameters.Add(sqlParameter);
-                    sqlCommand.ExecuteScalar(); // ejecuta el delete
+
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el delete
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
                 }
 
                 sqlConnection.Close();
             }
+            return resultado;
         }
 
-        public static void Add(Venta venta)
+        public static bool Add(Venta venta)
         {
+            bool resultado = false;
+
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[Venta] (Comentarios) VALUES (@Comentarios);";
@@ -110,11 +91,55 @@ namespace ProyectoFinalWebAPP.Repository
                 using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
                 {
                     sqlCommand.Parameters.Add(parameters);
-                    sqlCommand.ExecuteNonQuery(); // ejecuta el insert
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el insert
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
                 }
 
                 sqlConnection.Close();
             }
+            return resultado;
+
+        }
+
+        public static bool Update(Venta venta)
+        {
+            bool resultado = false;
+
+            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            {
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Venta] SET Comentarios = @comentarios WHERE Id = @id";
+
+                List<SqlParameter> parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("id", SqlDbType.BigInt) { Value = venta.Id },
+                    new SqlParameter("comentarios", SqlDbType.VarChar) { Value = venta.Comentarios }
+                };
+
+                sqlConnection.Open();
+
+                using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
+                {
+                    foreach (SqlParameter paramter in parameters)
+                    {
+                        sqlCommand.Parameters.Add(paramter);
+                    }
+
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // Se ejecuta update
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
+                }
+
+                sqlConnection.Close();
+            }
+
+            return resultado;
         }
     }
 }

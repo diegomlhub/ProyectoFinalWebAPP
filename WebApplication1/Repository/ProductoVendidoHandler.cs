@@ -1,6 +1,5 @@
 ﻿using ProyectoFinalWebAPP.Model;
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace ProyectoFinalWebAPP.Repository
@@ -15,36 +14,7 @@ namespace ProyectoFinalWebAPP.Repository
 
             return productoVendido;
         }
-
-        //public static ProductoVendido Get(long id)
-        //{
-        //    ProductoVendido productoVendido = new ProductoVendido();
-
-        //    using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
-        //    {
-        //        using (SqlCommand sqlCommand = new SqlCommand())
-        //        {
-        //            sqlCommand.Connection = sqlConnection;
-        //            sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[ProductoVendido] WHERE Id = @id";
-        //            sqlCommand.Parameters.AddWithValue("@id", id);
-
-        //            sqlConnection.Open();
-
-        //            using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
-        //            {
-        //                if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas y que data reader haya leido
-        //                {
-        //                    productoVendido = LeerProductoVendido(dataReader);
-        //                }
-        //            }
-
-        //            sqlConnection.Close();
-        //        }
-        //    }
-
-        //    return productoVendido;
-        //}
-
+               
         public static List<ProductoVendido> Get(long idUsuario)
         {
             List<ProductoVendido> productosVendidos = new List<ProductoVendido>();
@@ -152,12 +122,12 @@ namespace ProyectoFinalWebAPP.Repository
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryInsert = "UPDATE [SistemaGestion].[dbo].[ProductoVedido] SET Stock = @stock, IdProducto = @idProducto, idVenta = @idVenta WHERE Id = @id";
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[ProductoVendido] SET Stock = @stock, IdProducto = @idProducto, idVenta = @idVenta WHERE Id = @id;";
 
                 List<SqlParameter> parameters = new List<SqlParameter>()
                 {
                     new SqlParameter("id", SqlDbType.BigInt) { Value = productoVendido.Id },
-                    new SqlParameter("stck", SqlDbType.BigInt) { Value = productoVendido.Stock },
+                    new SqlParameter("stock", SqlDbType.BigInt) { Value = productoVendido.Stock },
                     new SqlParameter("idProducto", SqlDbType.BigInt) { Value = productoVendido.IdProducto },
                     new SqlParameter("idVenta", SqlDbType.BigInt) { Value = productoVendido.IdVenta }
                 };

@@ -16,7 +16,7 @@ namespace ProyectoFinalWebAPP.Controllers
         }
 
         [HttpDelete]
-        public bool Eliminar([FromBody] int id)
+        public bool Delete([FromBody] int id)
         {
             try
             {
@@ -29,7 +29,7 @@ namespace ProyectoFinalWebAPP.Controllers
         }
 
         [HttpPut]
-        public bool Modificar([FromBody] PutProducto producto)
+        public bool Update([FromBody] PutProducto producto)
         {
             try
             {

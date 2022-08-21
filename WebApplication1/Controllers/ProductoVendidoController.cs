@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProyectoFinalWebAPP.Controllers.DTOS;
+using ProyectoFinalWebAPI.Controllers.DTOS;
 using ProyectoFinalWebAPP.Model;
 using ProyectoFinalWebAPP.Repository;
 
@@ -16,7 +16,7 @@ namespace ProyectoFinalWebAPP.Controllers
         }
 
         [HttpDelete]
-        public bool Eliminar([FromBody] int id)
+        public bool Delete([FromBody] int id)
         {
             try
             {
@@ -27,6 +27,43 @@ namespace ProyectoFinalWebAPP.Controllers
                 return false;
             }
         }
-      
+
+        [HttpPut]
+        public bool Update([FromBody] PutProductoVendido productoVendido)
+        {
+            try
+            {
+                return ProductoVendidoHandler.Update(new ProductoVendido
+                {
+                    Id = productoVendido.Id,
+                    IdProducto = productoVendido.IdProducto,
+                    Stock = productoVendido.Stock,
+                    IdVenta = productoVendido.IdVenta
+                });
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        [HttpPost]
+        public bool Add([FromBody] PostProductoVendido productoVendido)
+        {
+            try
+            {
+                return ProductoVendidoHandler.Add(new ProductoVendido
+                {                    
+                    IdProducto = productoVendido.IdProducto,
+                    Stock = productoVendido.Stock,
+                    IdVenta = productoVendido.IdVenta
+                });
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
     }
 }
