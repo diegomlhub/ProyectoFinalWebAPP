@@ -49,14 +49,14 @@ namespace ProyectoFinalWebAPP.Controllers
         [HttpPost(Name = "CargarVenta")]
         public bool AddVenta([FromBody] List <PostVenta> listaProductos, string comentarios)
         {
-            VentaHandler.Add(new Venta { Comentarios = comentarios }); //Se carga venta "Coemntarios"
-                        
-            ProductoVendido productoVendido = new ProductoVendido();
-            
             try
             {
                 if (listaProductos.Count > 0)
                 {
+                    VentaHandler.Add(new Venta { Comentarios = comentarios }); //Se carga venta "Coemntarios"
+
+                    ProductoVendido productoVendido = new ProductoVendido();
+
                     foreach (PostVenta postProducto in listaProductos) //Se cargan los Procutos Vendidos
                     {
                         productoVendido.Stock = postProducto.Stock;
