@@ -141,5 +141,33 @@ namespace ProyectoFinalWebAPP.Repository
 
             return resultado;
         }
+
+        public static long IdUltimaVenta()
+        {   
+            Venta venta = new Venta();
+
+            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandText = "SELECT TOP(1) * FROM Venta ORDER BY Id DESC;"; //selecciono id de ultima venta cargada            
+                    sqlConnection.Open();
+
+                    using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+                    {
+                        if (dataReader.HasRows) //verifico que haya filas
+                        {
+                            venta.Id = Convert.ToInt32(dataReader["Id"]);
+                            
+                        }
+                    }
+
+                    sqlConnection.Close();
+                }
+            }
+
+            return venta.Id;
+        }
     }
 }

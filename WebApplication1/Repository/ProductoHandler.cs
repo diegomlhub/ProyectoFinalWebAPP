@@ -156,5 +156,35 @@ namespace ProyectoFinalWebAPP.Repository
 
             return resultado;
         }
+
+        public static bool UpdateStock(long id, int stock)
+        {
+            bool resultado = false;
+
+            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            {
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Producto] SET Stock = @stock WHERE Id = @idProducto;";
+                
+                //Actualizo el stock por el id del producto                
+                new SqlParameter("id", SqlDbType.BigInt) { Value = id };
+                new SqlParameter("stock", SqlDbType.Int) { Value = stock };
+                
+                sqlConnection.Open();
+
+                using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
+                {                    
+                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // Se ejecuta update
+
+                    if (numerosDeRegistros > 0)
+                    {
+                        resultado = true;
+                    }
+                }
+
+                sqlConnection.Close();
+            }
+
+            return resultado;
+        }
     }
 }

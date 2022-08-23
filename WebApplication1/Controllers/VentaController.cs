@@ -2,6 +2,7 @@
 using ProyectoFinalWebAPI.Controllers.DTOS;
 using ProyectoFinalWebAPP.Model;
 using ProyectoFinalWebAPP.Repository;
+using System.Linq.Expressions;
 
 namespace ProyectoFinalWebAPP.Controllers
 {
@@ -45,15 +46,32 @@ namespace ProyectoFinalWebAPP.Controllers
             }
         }
 
-        [HttpPost]
-        public bool Add([FromBody] PostVenta venta)
+        [HttpPost(Name = "CargarVenta")]
+        public bool AddVenta([FromBody] List <PostVenta> listaProductos, string comentarios)
         {
+            VentaHandler.Add(new Venta { Comentarios = comentarios }); //Se carga venta "Coemntarios"
+                        
+            ProductoVendido productoVendido = new ProductoVendido();
+            
             try
             {
-                return VentaHandler.Add(new Venta
+                if (listaProductos.Count > 0)
                 {
-                    Comentarios = venta.Comentarios
-                });
+                    foreach (PostVenta postProducto in listaProductos) //Se cargan los Procutos Vendidos
+                    {
+                        productoVendido.Stock = postProducto.Stock;
+                        productoVendido.IdProducto = postProducto.Id;
+                        productoVendido.IdVenta = VentaHandler.IdUltimaVenta(); //Id de venta cargada
+                        ProductoVendidoHandler.Add(productoVendido);
+                        ProductoHandler.UpdateStock(postProducto.Id, postProducto.Stock); //Actualizo stock del producto
+                    }
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
             catch (Exception ex)
             {
