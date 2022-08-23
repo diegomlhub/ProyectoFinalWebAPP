@@ -156,10 +156,9 @@ namespace ProyectoFinalWebAPP.Repository
 
                     using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
                     {
-                        if (dataReader.HasRows) //verifico que haya filas
+                        if (dataReader.HasRows & dataReader.Read()) //verifico que haya filas
                         {
-                            venta.Id = Convert.ToInt32(dataReader["Id"]);
-                            
+                            venta.Id = Convert.ToInt32(dataReader["Id"]);                            
                         }
                     }
 

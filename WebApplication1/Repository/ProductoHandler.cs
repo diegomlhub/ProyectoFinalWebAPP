@@ -1,6 +1,7 @@
 ﻿using ProyectoFinalWebAPP.Model;
 using System.Data;
 using System.Data.SqlClient;
+using System.Reflection.Metadata;
 
 namespace ProyectoFinalWebAPP.Repository
 {
@@ -164,15 +165,23 @@ namespace ProyectoFinalWebAPP.Repository
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
                 string queryInsert = "UPDATE [SistemaGestion].[dbo].[Producto] SET Stock = @stock WHERE Id = @idProducto;";
-                
+
                 //Actualizo el stock por el id del producto                
-                new SqlParameter("id", SqlDbType.BigInt) { Value = id };
-                new SqlParameter("stock", SqlDbType.Int) { Value = stock };
-                
+                List<SqlParameter> parameters = new List<SqlParameter>()
+                {
+                    new SqlParameter("idProducto", SqlDbType.BigInt) { Value = id },
+                    new SqlParameter("stock", SqlDbType.Int) { Value = stock }
+                };
+
                 sqlConnection.Open();
 
                 using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
-                {                    
+                {
+                    foreach (SqlParameter paramter in parameters)
+                    {
+                        sqlCommand.Parameters.Add(paramter);
+                    }
+
                     int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // Se ejecuta update
 
                     if (numerosDeRegistros > 0)
