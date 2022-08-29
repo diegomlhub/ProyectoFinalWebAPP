@@ -164,7 +164,7 @@ namespace ProyectoFinalWebAPP.Repository
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Producto] SET Stock = @stock WHERE Id = @idProducto;";
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Producto] SET Stock = Stock - @stock WHERE Id = @idProducto;";
 
                 //Actualizo el stock por el id del producto                
                 List<SqlParameter> parameters = new List<SqlParameter>()
