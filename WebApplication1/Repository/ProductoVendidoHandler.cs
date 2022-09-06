@@ -7,15 +7,48 @@ namespace ProyectoFinalWebAPP.Repository
     public static class ProductoVendidoHandler
     {
         public const string ConnectionString = "Server=DESKTOP-MMRH9QD;Database=SistemaGestion;Trusted_Connection=True";
-
+        //Metodo interno LeerProductoVendido() para ahorrar lineas de datareader y parameters.
         private static ProductoVendido LeerProductoVendido(SqlDataReader dataReader)
         {
             ProductoVendido productoVendido = new ProductoVendido(Convert.ToInt32(dataReader["Id"]), Convert.ToInt32(dataReader["Stock"]), Convert.ToInt32(dataReader["IdProducto"]), Convert.ToInt32(dataReader["IdVenta"]));
 
             return productoVendido;
         }
-               
-        public static List<ProductoVendido> Get(long idUsuario)
+
+        public static List<ProductoVendido> GetByIdVenta(long idVenta)
+        {
+            List<ProductoVendido> productosVendidos = new List<ProductoVendido>();
+
+            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandText = "SELECT * FROM[SistemaGestion].[dbo].[ProductoVendido] WHERE IdVenta = @idVenta;";
+                    sqlCommand.Parameters.AddWithValue("@idVenta", idVenta); 
+                    sqlConnection.Open();
+                    
+                    using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+                    {
+                        if (dataReader.HasRows) //verifico que haya filas
+                        {
+                            while (dataReader.Read()) //agrego a la lista de productosVedidos con idVenta ingresado
+                            {
+                                productosVendidos.Add(LeerProductoVendido(dataReader));
+                            }
+                        }
+                    }
+
+                    sqlConnection.Close();
+                }
+
+                
+            }
+
+            return productosVendidos;
+        }
+
+        public static List<ProductoVendido> GetByIdUsuario(long idUsuario)
         {
             List<Producto> productos = ProductoHandler.Get(idUsuario); //Funcion de traer producto por idUusario
 

@@ -9,10 +9,10 @@ namespace ProyectoFinalWebAPP.Controllers
     [Route("[controller]")]
     public class ProductoVendidoController : ControllerBase
     {
-        [HttpGet(Name = "GetProductosVendidosByIdUsuario")]
+        [HttpGet(Name = "TraerProcutosVendidos")]
         public List<ProductoVendido> Get(long idUsuario)
         {
-            return ProductoVendidoHandler.Get(idUsuario);
+            return ProductoVendidoHandler.GetByIdUsuario(idUsuario);
         }
 
         [HttpDelete]

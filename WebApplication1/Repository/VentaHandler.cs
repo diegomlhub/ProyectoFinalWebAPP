@@ -7,7 +7,7 @@ namespace ProyectoFinalWebAPP.Repository
     public static class VentaHandler
     {
         public const string ConnectionString = "Server=DESKTOP-MMRH9QD;Database=SistemaGestion;Trusted_Connection=True";
-
+        //Metodo interno LeerVenta() para ahorrar lineas de datareader y parameters.
         private static Venta LeerVenta(SqlDataReader dataReader)
         {
             Venta venta = new Venta(Convert.ToInt32(dataReader["Id"]), dataReader["Comentarios"].ToString());

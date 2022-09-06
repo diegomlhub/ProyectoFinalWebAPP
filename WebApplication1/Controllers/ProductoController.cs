@@ -9,13 +9,13 @@ namespace ProyectoFinalWebAPP.Controllers
     [Route("[controller]")]
     public class ProductoController : ControllerBase
     {
-        [HttpGet(Name = "GetProductosByIdUsuario")]
-        public List<Producto> Get(long idUsuario)
+        [HttpGet(Name = "TraerProductos")]
+        public List<Producto> Get()
         {
-            return ProductoHandler.Get(idUsuario);
+            return ProductoHandler.Get();
         }
 
-        [HttpDelete]
+        [HttpDelete(Name = "EliminarProducto")]
         public bool Delete([FromBody] int id)
         {
             try
@@ -28,7 +28,7 @@ namespace ProyectoFinalWebAPP.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut(Name = "ModificarProducto")]
         public bool Update([FromBody] PutProducto producto)
         {
             try
@@ -49,7 +49,7 @@ namespace ProyectoFinalWebAPP.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost(Name = "CrearProducto")]
         public bool Add([FromBody] PostProducto producto)
         {
             try

@@ -1,7 +1,6 @@
 ﻿using ProyectoFinalWebAPP.Model;
 using System.Data;
 using System.Data.SqlClient;
-using System.Reflection.Metadata;
 
 namespace ProyectoFinalWebAPP.Repository
 {
@@ -14,6 +13,37 @@ namespace ProyectoFinalWebAPP.Repository
             Producto producto = new Producto(Convert.ToInt32(dataReader["Id"]), dataReader["Descripciones"].ToString(), Convert.ToDouble(dataReader["Costo"]), Convert.ToDouble(dataReader["PrecioVenta"]), Convert.ToInt32(dataReader["Stock"]), Convert.ToInt32(dataReader["IdUsuario"]));
 
             return producto;
+        }
+
+        public static List<Producto> Get()
+        {
+            List<Producto> productos = new List<Producto>();
+
+            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            {
+                using (SqlCommand sqlCommand = new SqlCommand())
+                {
+                    sqlCommand.Connection = sqlConnection;
+                    sqlCommand.CommandText = "SELECT * FROM [SistemaGestion].[dbo].[Producto];";                    
+
+                    sqlConnection.Open();
+
+                    using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+                    {
+                        if (dataReader.HasRows) //verifico que haya filas
+                        {
+                            while (dataReader.Read())
+                            {
+                                productos.Add(LeerProducto(dataReader));
+                            }
+                        }
+                    }
+
+                    sqlConnection.Close();
+                }
+            }
+
+            return productos;
         }
 
         public static List<Producto> Get(long idUsuario)

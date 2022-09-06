@@ -7,7 +7,7 @@ namespace ProyectoFinalWebAPP.Repository
     public static class UsuarioHandler
     {
         public const string ConnectionString = "Server=DESKTOP-MMRH9QD;Database=SistemaGestion;Trusted_Connection=True";
-
+        //Metodo interno LeerUsuario() para ahorrar lineas de datareader y parameters.
         private static Usuario LeerUsuario(SqlDataReader dataReader)
         {
             Usuario usuario = new Usuario(Convert.ToInt32(dataReader["Id"]), dataReader["Nombre"].ToString(), dataReader["Apellido"].ToString(), dataReader["NombreUsuario"].ToString(), dataReader["Contraseña"].ToString(), dataReader["Mail"].ToString());
@@ -42,35 +42,7 @@ namespace ProyectoFinalWebAPP.Repository
             }
 
             return usuario;
-        }
-
-        //public static List<Usuario> Get()
-        //{
-        //    List<Usuario> usuarios = new List<Usuario>();
-
-        //    using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
-        //    {
-        //        using (SqlCommand sqlCommand = new SqlCommand("SELECT * FROM [SistemaGestion].[dbo].[Usuario]", sqlConnection))
-        //        {
-        //            sqlConnection.Open();
-
-        //            using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
-        //            {
-        //                if (dataReader.HasRows) //verifico que haya filas
-        //                {
-        //                    while (dataReader.Read())
-        //                    {
-        //                        usuarios.Add(LeerUsuario(dataReader));
-        //                    }
-        //                }
-        //            }
-
-        //            sqlConnection.Close();
-        //        }
-        //    }
-
-        //    return usuarios;
-        //}
+        }       
 
         public static Usuario Auth(string userName, string userContrseña)
         {
@@ -135,12 +107,19 @@ namespace ProyectoFinalWebAPP.Repository
         public static bool Add(Usuario usuario)
         {
             bool resultado = false;
-
-            using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+            
+            if (!String.IsNullOrEmpty(usuario.Nombre) &
+                !String.IsNullOrEmpty(usuario.Apellido) &
+                !String.IsNullOrEmpty(usuario.NombreUsuario) &
+                !String.IsNullOrEmpty(usuario.Contraseña) &
+                !String.IsNullOrEmpty(usuario.Mail) &
+                (usuario.NombreUsuario != Get(usuario.NombreUsuario).NombreUsuario)) //me fijo que no exista un usuario con ese nombre de usuario y que no se ingrese nulo o vacio.
             {
-                string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[Usuario] (Nombre, Apellido, NombreUsuario, Contraseña, Mail) VALUES (@Nombre, @apellido, @NombreUsuario, @contraseña, @mail);";
+                using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
+                {
+                    string queryInsert = "INSERT INTO [SistemaGestion].[dbo].[Usuario] (Nombre, Apellido, NombreUsuario, Contraseña, Mail) VALUES (@Nombre, @apellido, @NombreUsuario, @contraseña, @mail);";
 
-                List<SqlParameter> parameters = new List<SqlParameter>()
+                    List<SqlParameter> parameters = new List<SqlParameter>()
                 {
                     new SqlParameter("nombre", SqlDbType.VarChar) { Value = usuario.Nombre },
                     new SqlParameter("apellido", SqlDbType.VarChar) { Value = usuario.Apellido },
@@ -149,25 +128,29 @@ namespace ProyectoFinalWebAPP.Repository
                     new SqlParameter("mail", SqlDbType.VarChar) { Value = usuario.Mail }
                 };
 
-                sqlConnection.Open();
+                    sqlConnection.Open();
 
-                using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
-                {
-                    foreach (SqlParameter paramter in parameters)
+                    using (SqlCommand sqlCommand = new SqlCommand(queryInsert, sqlConnection))
                     {
-                        sqlCommand.Parameters.Add(paramter);
+                        foreach (SqlParameter paramter in parameters)
+                        {
+                            sqlCommand.Parameters.Add(paramter);
+                        }
+
+                        int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el insert
+
+                        if (numerosDeRegistros > 0)
+                        {
+                            resultado = true;
+                        }
                     }
 
-                    int numerosDeRegistros = sqlCommand.ExecuteNonQuery(); // ejecuta el insert
-
-                    if (numerosDeRegistros > 0)
-                    {
-                        resultado = true;
-                    } 
+                    sqlConnection.Close();
                 }
 
-                sqlConnection.Close();
-            }
+            };
+
+            
             return resultado;
         }
 
@@ -177,7 +160,7 @@ namespace ProyectoFinalWebAPP.Repository
 
             using (SqlConnection sqlConnection = new SqlConnection(ConnectionString))
             {
-                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Usuario] SET Nombre = '@nombre', Apellido = '@apellido', NombreUsuario = '@nombreUsuario', Contraseña = '@contraseña', Mail = '@mail' WHERE Id = @id";
+                string queryInsert = "UPDATE [SistemaGestion].[dbo].[Usuario] SET Nombre = @nombre, Apellido = @apellido, Contraseña = @contraseña, Mail = @mail WHERE NombreUsuario = @nombreUsuario;";
 
                 List<SqlParameter> parameters = new List<SqlParameter>()
                 {
@@ -185,8 +168,7 @@ namespace ProyectoFinalWebAPP.Repository
                     new SqlParameter("apellido", SqlDbType.VarChar) { Value = usuario.Apellido },
                     new SqlParameter("nombreUsuario", SqlDbType.VarChar) { Value = usuario.NombreUsuario },
                     new SqlParameter("contraseña", SqlDbType.VarChar) { Value = usuario.Contraseña },
-                    new SqlParameter("mail", SqlDbType.VarChar) { Value = usuario.Mail },
-                    new SqlParameter("id", SqlDbType.VarChar) { Value = usuario.Id }
+                    new SqlParameter("mail", SqlDbType.VarChar) { Value = usuario.Mail }                    
                 };
 
                 sqlConnection.Open();

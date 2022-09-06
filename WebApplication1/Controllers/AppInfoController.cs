@@ -6,7 +6,7 @@ namespace ProyectoFinalWebAPI.Controllers
     [Route("[controller]")]
     public class AppInfoController : ControllerBase
     {
-        [HttpGet]
+        [HttpGet(Name = "TraerNombreDelLocal")]
         public string AppInfo()
         {
             return "Proyecto Final Web Api 1.0";

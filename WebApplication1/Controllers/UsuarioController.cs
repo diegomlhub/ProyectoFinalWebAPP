@@ -9,13 +9,13 @@ namespace ProyectoFinalWebAPP.Controllers
     [Route("[controller]")]
     public class UsuarioController : ControllerBase
     {
-        [HttpGet(Name = "GetUsuario")]
+        [HttpGet(Name = "TraertUsuario")]
         public Usuario Get(string nombreUsuario)
         {
             return UsuarioHandler.Get(nombreUsuario);            
         }
 
-        [HttpDelete]
+        [HttpDelete(Name = "EliminarUsuario")]
         public bool Delete([FromBody] int id)
         {
             try
@@ -28,14 +28,13 @@ namespace ProyectoFinalWebAPP.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut(Name = "ModificarUsuario")]
         public bool Update([FromBody] PutUsuario usuario)
         {
             try
             {
                 return UsuarioHandler.Update(new Usuario
-                {
-                    Id = usuario.Id,
+                {                    
                     Nombre = usuario.Nombre,
                     Apellido = usuario.Apellido,
                     NombreUsuario = usuario.NombreUsuario,
@@ -49,7 +48,7 @@ namespace ProyectoFinalWebAPP.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost(Name = "CrearUsuario")]
         public bool Add([FromBody] PostUsuario usuario)
         {
             try

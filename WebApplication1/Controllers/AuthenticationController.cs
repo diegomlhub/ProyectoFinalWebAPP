@@ -8,7 +8,7 @@ namespace ProyectoFinalWebAPI.Controllers
     [Route("[controller]")]
     public class AuthenticationController : ControllerBase
     {
-        [HttpGet(Name = "Autenticacion")]
+        [HttpGet(Name = "InicioDeSesion")]
         public Usuario Auth(string nombreUsuario, string contraseña)
         {
             return UsuarioHandler.Auth(nombreUsuario, contraseña);
